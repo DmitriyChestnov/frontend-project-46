@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const comparer = (data1, data2) => {
+const parse = (data1, data2) => {
   const keys1 = Object.keys(data1);
   const keys2 = Object.keys(data2);
 
@@ -23,4 +23,4 @@ const comparer = (data1, data2) => {
   return `${compare}\n}`;
 };
 
-export default comparer;
+export default parse;
