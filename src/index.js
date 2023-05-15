@@ -2,17 +2,21 @@ import { extname } from 'path';
 import { readFileSync } from 'node:fs';
 import comparer from './comparer.js';
 import parser from './parser.js';
+import stylish from './formatters/stylish.js';
 
-const genDiff = (filepath1, filepath2) => {
-  const data1 = readFileSync(filepath1);
-  const data2 = readFileSync(filepath2);
-  const format1 = extname(filepath1);
-  const format2 = extname(filepath2);
+const readAndParseFile = (filepath) => {
+  const data = readFileSync(filepath);
+  const format = extname(filepath);
+  return parser(data, format);
+};
 
-  const obj1 = parser(data1, format1);
-  const obj2 = parser(data2, format2);
+const genDiff = (filepath1, filepath2, format) => {
+  const obj1 = readAndParseFile(filepath1);
+  const obj2 = readAndParseFile(filepath2);
 
-  return comparer(obj1, obj2);
+  const data = comparer(obj1, obj2);
+  const output = stylish(data, format);
+  return output;
 };
 
 export default genDiff;
