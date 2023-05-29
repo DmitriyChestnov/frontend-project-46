@@ -1,15 +1,10 @@
 import _ from 'lodash';
 
-const stringifyValue = (val) => {
-  let valStr;
-  if (_.isObject(val)) {
-    valStr = '[complex value]';
-  } else if (_.isString(val)) {
-    valStr = `'${val}'`;
-  } else {
-    valStr = String(val);
+const showValue = (value) => {
+  if (_.isObject(value)) {
+    return '[complex value]';
   }
-  return valStr;
+  return (_.isString(value)) ? `'${value}'` : value;
 };
 
 const plain = (data, path = []) => {
@@ -18,9 +13,9 @@ const plain = (data, path = []) => {
   }) => {
     let result;
     const keyStr = [...path, key].join('.');
-    const valStr = stringifyValue(val);
+    const valStr = showValue(val);
     if (operation === 'update') {
-      const oldValStr = stringifyValue(oldVal);
+      const oldValStr = showValue(oldVal);
       result = `Property '${keyStr}' was updated. From ${oldValStr} to ${valStr}`;
     } else if (operation === 'add') {
       result = `Property '${keyStr}' was added with value: ${valStr}`;
