@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
-import genDiff from '../src/index.js';
+import genDiff from '../src/generateDiff.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,6 +20,8 @@ test('genDiff nested obj json', () => {
   expect(genDiff(filepath1, filepath2)).toEqual(result1);
   const result2 = readFile('expected_33.txt');
   expect(genDiff(filepath3, filepath3)).toEqual(result2);
+  const result3 = readFile('expectedPlain_12.txt');
+  expect(genDiff(filepath1, filepath2, 'plain')).toEqual(result3);
 });
 
 test('genDiff nested obj yml', () => {
