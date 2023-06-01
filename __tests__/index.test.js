@@ -20,8 +20,10 @@ test('genDiff nested obj json', () => {
   expect(genDiff(filepath1, filepath2)).toEqual(result1);
   const result2 = readFile('expected_33.txt');
   expect(genDiff(filepath3, filepath3)).toEqual(result2);
-  const result3 = readFile('expectedPlain_12.txt');
+  const result3 = readFile('expected_Plain_12.txt');
   expect(genDiff(filepath1, filepath2, 'plain')).toEqual(result3);
+  const result4 = readFile('expected_Json_12.txt');
+  expect(genDiff(filepath1, filepath2, 'json')).toEqual(result4);
 });
 
 test('genDiff nested obj yml', () => {

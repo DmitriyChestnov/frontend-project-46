@@ -1,43 +1,33 @@
 import _ from 'lodash';
 
-const getPrefixes = (depth) => {
-  const replacer = ' ';
-  const spacesCount = 4;
-  const prefix = replacer.repeat(spacesCount * (depth + 1) - 2);
-  const bracePrefix = replacer.repeat(spacesCount * depth);
-  return { prefix, bracePrefix };
+const getIndent = (depth, spacesCount = 4) => ' '.repeat(spacesCount * depth - 2);
+
+const stringify = (value, depth) => {
+  if (!_.isObject(value)) {
+    return `${value}`;
+  }
+  const massVal = Object.entries(value);
+  const lines = massVal.map(([key, val]) => `${getIndent(depth + 1)}  ${key}: ${stringify(val, depth + 1)}`);
+  return ['{', ...lines, `${getIndent(depth)}  }`].join('\n');
 };
 
-const stylish = (data, depth = 0) => {
-  if (data === undefined || data === null || typeof data !== 'object') {
-    return String(data);
-  }
-  let lines;
-  const { prefix, bracePrefix } = getPrefixes(depth);
-  const currentDepth = depth + 1;
-  if (Array.isArray(data)) {
-    lines = data.flatMap(({
-      key, val, oldVal, operation,
-    }) => {
-      let result = [];
-      const valStr = stylish(val, currentDepth);
-      if (operation === 'update') {
-        const oldValStr = stylish(oldVal, currentDepth);
-        result = [`${prefix}- ${key}: ${oldValStr}`, `${prefix}+ ${key}: ${valStr}`];
-      } else if (operation === 'add') {
-        result = `${prefix}+ ${key}: ${valStr}`;
-      } else if (operation === 'delete') {
-        result = `${prefix}- ${key}: ${valStr}`;
-      } else if (operation === 'nochange') {
-        result = `${prefix}  ${key}: ${valStr}`;
-      }
-      return result;
-    });
-  } else {
-    const keys = _.sortBy(_.keys(data));
-    lines = keys.map((key) => `${prefix}  ${key}: ${stylish(data[key], currentDepth)}`);
-  }
-  return ['{', ...lines, `${bracePrefix}}`].join('\n');
+const stylish = (data) => {
+  const iter = (tree, depth) => tree.map((node) => {
+    switch (node.status) {
+      case 'nested':
+        return `${getIndent(depth)}  ${node.name}: {\n${iter(node.children, depth + 1).join('')}${getIndent(depth)}  }\n`;
+      case 'changed':
+        return `${getIndent(depth)}- ${node.name}: ${stringify(node.oldValue, depth)}\n`
+        + `${getIndent(depth)}+ ${node.name}: ${stringify(node.newValue, depth)}\n`;
+      case 'added':
+        return `${getIndent(depth)}+ ${node.name}: ${stringify(node.newValue, depth)}\n`;
+      case 'removed':
+        return `${getIndent(depth)}- ${node.name}: ${stringify(node.oldValue, depth)}\n`;
+      default:
+        return `${getIndent(depth)}  ${node.name}: ${stringify(node.value, depth)}\n`;
+    }
+  });
+  return `{\n${iter(data, 1).join('')}}`;
 };
 
 export default stylish;
