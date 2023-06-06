@@ -12,19 +12,21 @@ const stringify = (value, depth) => {
 };
 
 const stylish = (data) => {
-  const iter = (tree, depth) => tree.map((node) => {
-    switch (node.status) {
+  const iter = (tree, depth) => tree.map(({
+    status, children, name, value, oldValue, newValue,
+  }) => {
+    switch (status) {
       case 'nested':
-        return `${getIndent(depth)}  ${node.name}: {\n${iter(node.children, depth + 1).join('')}${getIndent(depth)}  }\n`;
+        return `${getIndent(depth)}  ${name}: {\n${iter(children, depth + 1).join('')}${getIndent(depth)}  }\n`;
       case 'changed':
-        return `${getIndent(depth)}- ${node.name}: ${stringify(node.oldValue, depth)}\n`
-        + `${getIndent(depth)}+ ${node.name}: ${stringify(node.newValue, depth)}\n`;
+        return `${getIndent(depth)}- ${name}: ${stringify(oldValue, depth)}\n`
+        + `${getIndent(depth)}+ ${name}: ${stringify(newValue, depth)}\n`;
       case 'added':
-        return `${getIndent(depth)}+ ${node.name}: ${stringify(node.newValue, depth)}\n`;
+        return `${getIndent(depth)}+ ${name}: ${stringify(newValue, depth)}\n`;
       case 'removed':
-        return `${getIndent(depth)}- ${node.name}: ${stringify(node.oldValue, depth)}\n`;
+        return `${getIndent(depth)}- ${name}: ${stringify(oldValue, depth)}\n`;
       default:
-        return `${getIndent(depth)}  ${node.name}: ${stringify(node.value, depth)}\n`;
+        return `${getIndent(depth)}  ${name}: ${stringify(value, depth)}\n`;
     }
   });
   return `{\n${iter(data, 1).join('')}}`;
