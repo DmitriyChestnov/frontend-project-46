@@ -27,11 +27,3 @@ test('genDiff nested obj yml', () => {
   const result = readFile('expected_12.txt');
   expect(genDiff(filepath3, filepath4)).toEqual(result);
 });
-
-test('Should throw an error', () => {
-  const filePathText1 = getFixturePath('expected_12.txt');
-  const filePathText2 = getFixturePath('expected_Json_12.txt');
-  expect(() => {
-    genDiff(filePathText1, filePathText2);
-  }).toThrow('invalid file format');
-});

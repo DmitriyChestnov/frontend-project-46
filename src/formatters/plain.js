@@ -4,7 +4,7 @@ const getValue = (value) => {
   if (_.isObject(value)) {
     return '[complex value]';
   }
-  return (typeof value === 'string') ? `'${value}'` : value;
+  return (typeof value === 'string') ? `'${value}'` : String(value);
 };
 
 const plain = (data) => {
