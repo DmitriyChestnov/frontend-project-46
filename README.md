@@ -17,8 +17,9 @@ npm ci
 npm link
 ```
 
-Run app with command: gendiff <filepath1>filename1.json <filepath2>filename2.yaml
-where <filepath> - absolute or relative file path
+Run app with command:
+`gendiff <filepath1>filename1.json <filepath2>filename2.yaml`
+ where `<filepath>` - absolute or relative file path
 
 ### JSON files (stylish format)
 [![asciicast](https://asciinema.org/a/6jyqgngKfAjKY3UtXEdhefAlv.svg)](https://asciinema.org/a/6jyqgngKfAjKY3UtXEdhefAlv)
